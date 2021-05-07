@@ -1,0 +1,2 @@
+# trail_recommender
+Capstone Project of Lighthouse Labs consisting of web scraping hiking trail information to build a dataset on top of the Walking and Tramping routes provided by the Department of Conservation (DOC) in New Zealand. Trail information is cleaned and recommendation systems are generated based on hiking similarities. If possible, user reviews of the tracks will be included as well as images of the trail for a multiple recommendation offers during deployment.
