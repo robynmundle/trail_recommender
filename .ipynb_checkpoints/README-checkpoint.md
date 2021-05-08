@@ -11,19 +11,6 @@ Data: I have started with the [Walking and Tramping Routes provided by the Depar
 
 Machine Learning: I intend to first generate a content-based filtering recommendation system using hike to hike similarities. This model will look at trail length, elevation, difficulties, etc. Secondly, once user review information has been cleaned and preprocessed, I want to generate two further recommender engines. The first will encapsulate the most popular trails overall, as people often are drawn to popular sites for a reason. The second collaborative filtering model will generate similarly liked hikes based on input hike. If I am able, the final stretch goal I set for myself is to include an image repository such that users can pick a trail they like based on pictures and give back trail recommendations based on this.
 
-## Progress Report - Daily
-The following will be updated through-out the duration of this capstone project to reflect the progress made
-##### Thurs May 6, 2021
-* Tasks: Find trail information to build the dataset from
-* Accomplished: DOC Routes obtained. WalkingKiwi.co.nz identified as scrapable for trail information.
-* Hurdles: Web scraping and parsing through the soup to get information useful to me. Need to find user information.
-
-##### Fri May 7, 2021
-* Tasks: Setup Github repo information. Scrape and transform WalkingKiwi trail information. Clean. Find user reviews of trails.
-* Accomplished: 
-* Hurdles:
-
-
 ## Project Milestone
 Milestone | Deadline | Actual | Notes |
 --- | --- | --- | --- |
@@ -40,4 +27,16 @@ Deployment | May 16 | | |
 Presentation Started | May 17 | | |
 Presentation Dry-Run | May 19 | | |
 Presentation | May 20 | | |
+
+## Progress Report - Daily
+The following will be updated through-out the duration of this capstone project to reflect the progress made
+##### Thurs May 6, 2021
+* Tasks: Find trail information to build the dataset from
+* Accomplished: DOC Routes obtained. WalkingKiwi.co.nz identified as scrapable for trail information.
+* Hurdles: Web scraping and parsing through the soup to get information useful to me. Need to find user information.
+
+##### Fri May 7, 2021
+* Tasks: Setup Github repo information. Scrape and transform WalkingKiwi trail information. Clean. Find user reviews of trails.
+* Accomplished: 
+* Hurdles:
 
