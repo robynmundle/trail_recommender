@@ -41,7 +41,13 @@ The following will be updated through-out the duration of this capstone project 
 * Hurdles: Scraping takes *forever*
 
 ##### Sat May 8, 2021
-* Tasks: 
-* Accomplished: 
-* Hurdles: 
+* Tasks: Scrape and transform WalkingKiwi trail information. Clean.
+* Accomplished: We have trail information for 3000 trails across NZ
+* Hurdles: User reviews? hiking trail tags?
+
+##### Sat May 8, 2021
+* Tasks: Finish cleaning trail information. EDA information to see if recommender engine can be generated from this info. Search for user reviews to scrape.
+* Accomplished:
+* Hurdles:
+
 
