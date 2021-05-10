@@ -15,7 +15,7 @@ Machine Learning: I intend to first generate a content-based filtering recommend
 Milestone | Deadline | Actual | Notes |
 --- | --- | --- | --- |
 Project Started | May 6 | May 6 | Started off rough but decided to pursue NZ hikes |
-Data Gathered | May 9 | | |
+Data Gathered | May 9 | May 9 | Will likely keep adding to this dataset but first dataset finished|
 Dataset Prepared | May 10 | | |
 Content-Based Recommender | May 10 | | |
 Popular Trail Recommender | May 11 | | |
@@ -45,9 +45,13 @@ The following will be updated through-out the duration of this capstone project 
 * Accomplished: We have trail information for 3000 trails across NZ
 * Hurdles: User reviews? hiking trail tags?
 
-##### Sat May 8, 2021
-* Tasks: Finish cleaning trail information. EDA information to see if recommender engine can be generated from this info. Search for user reviews to scrape.
-* Accomplished:
-* Hurdles:
+##### Sun May 9, 2021
+* Tasks: Finish cleaning trail information. EDA.  Search for user reviews to scrape?
+* Accomplished: EDA information to see if recommender engine can be generated from this info. Collected regional info for trails.
+* Hurdles: Difficulties in user ratings attainable for the trails. Look into manual labour? Image collection?
 
+##### Mon May 10, 2021
+* Tasks:
+* Accomplished
+* Hurdles
 
