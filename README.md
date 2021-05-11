@@ -16,15 +16,14 @@ Milestone | Deadline | Actual | Notes |
 --- | --- | --- | --- |
 Project Started | May 6 | May 6 | Started off rough but decided to pursue NZ hikes |
 Data Gathered | May 9 | May 9 | Will likely keep adding to this dataset but first dataset finished|
-Dataset Prepared | May 10 | | |
-Content-Based Recommender | May 10 | | |
-Popular Trail Recommender | May 11 | | |
-User-Based Recommender | May 12 | | |
+Dataset Prepared | May 10 | May 9 | For now, the data looks good! We can circle back later |
+Content-Based Recommender | May 10 | May 10 | Tested Euclidean Distance and Cosine Similarity and worked already implemented into deployment |
+Popular Trail Recommender | May 11 | | Likely cannot do this -- no user reviews yet |
+User-Based Recommender | May 12 | | Likely cannot do this -- no user reviews yet |
 Flask API App | May 14 | | |
 Image Data Exploration | May 15 | | |
 Image Recommender | May 16 | | |
 Deployment | May 16 | | |
-Presentation Started | May 17 | | |
 Presentation Dry-Run | May 19 | | |
 Presentation | May 20 | | |
 
@@ -51,7 +50,7 @@ The following will be updated through-out the duration of this capstone project 
 * Hurdles: Difficulties in user ratings attainable for the trails. Look into manual labour? Image collection?
 
 ##### Mon May 10, 2021
-* Tasks:
-* Accomplished
-* Hurdles
+* Tasks: Trial out some form of content-based hike recommendations
+* Accomplished: Woohoo! Learned Streamlit.io and already started deploying the recommendation model into the website!
+* Hurdles: n/a -- keep on keeping on
 
