@@ -22,19 +22,18 @@ def euclidean_rec(title, df):
     scaler = StandardScaler().fit(X)
     X = scaler.transform(X)
     
-    idx = df.loc[df['name'] == title]
+    hike_lookup = trail_recomm.loc[trail_recomm['name'] == title]
     
-    test = scaler.transform(test)
+    hike_lookup = scaler.transform(hike_lookup)
     # Distance from all other cars
-    distances = euclidean_distances(X, test)
-    distances = distances.reshape(-1)   # Before it was (n_cars, 1)
+    distances = euclidean_distances(X, hike_lookup)
+    distances = distances.reshape(-1)   
     # Find the 3 indices with the minimum distance (highest similarity) to the car we're looking at
     ordered_indices = distances.argsort()
-    closest_indices = ordered_indices[1:6]
+    closest_indices = ordered_indices[1:num_rec]
     # Get the cars for these indices
-    closest_trails = trails.iloc[closest_indices]
-    closest_trails
-    return
+    closest_trails = trail_recomm.iloc[closest_indices]
+    return closest_trails
 
 # function to vectorize + find cosine similarity matrix
 def vectorize_text_cosine(data):
@@ -157,7 +156,7 @@ def main():
         if st.button("Recommend"):
             if search_term is not None:
                 try:
-                    results = cosine_rec(search_term, cos_sim_matrix,df,num_of_rec=num_rec)
+                    results = cosine_rec(search_term, cos_sim_matrix, df, num_of_rec=num_rec)
                     for row in results.iterrows():
                         rec_title = row[1][0]
                         rec_region = row[1][1]

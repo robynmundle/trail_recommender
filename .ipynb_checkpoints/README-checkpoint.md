@@ -52,5 +52,12 @@ The following will be updated through-out the duration of this capstone project 
 ##### Mon May 10, 2021
 * Tasks: Trial out some form of content-based hike recommendations
 * Accomplished: Woohoo! Learned Streamlit.io and already started deploying the recommendation model into the website!
-* Hurdles: n/a -- keep on keeping on
+
+##### Tues May 11, 2021
+* Tasks: Implement filtering to search within dataframe to alter the recommendations
+* Accomplished: filtering, started euclidean distance model and looked into altering cosine sim off name-only
+
+##### Wed May 12, 2021
+* Tasks: Get recommendation from trail stats after any type of dataset filtering (location/stats). Get graph of elevation profile for hike in output
+* Accomplished: 
 
