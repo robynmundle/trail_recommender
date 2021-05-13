@@ -20,7 +20,7 @@ Dataset Prepared | May 10 | May 9 | For now, the data looks good! We can circle 
 Content-Based Recommender | May 10 | May 10 | Tested Euclidean Distance and Cosine Similarity and worked already implemented into deployment |
 Popular Trail Recommender | May 11 | | Likely cannot do this -- no user reviews yet |
 User-Based Recommender | May 12 | | Likely cannot do this -- no user reviews yet |
-Flask API App | May 14 | | |
+Streamlit.io App | May 14 | | |
 Image Data Exploration | May 15 | | |
 Image Recommender | May 16 | | |
 Deployment | May 16 | | |
@@ -59,5 +59,11 @@ The following will be updated through-out the duration of this capstone project 
 
 ##### Wed May 12, 2021
 * Tasks: Get recommendation from trail stats after any type of dataset filtering (location/stats). Get graph of elevation profile for hike in output
-* Accomplished: 
+* Accomplished: Recommendations done. Elevation graph output done. Image spot set, need images
+* Hurdles: look into recommendation for other regions if search trail from different region
+
+##### Thurs May 13, 2021
+* Tasks:
+* Accomplished:
+* Hurdles:
 

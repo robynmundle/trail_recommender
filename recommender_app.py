@@ -2,6 +2,8 @@ import streamlit as st
 import streamlit.components.v1 as stc
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from path import Path
 import base64
 from sklearn.feature_extraction.text import CountVectorizer
@@ -14,63 +16,39 @@ def load_data(data):
     df = pd.read_csv(data, index_col=0)
     return df
 
-def euclidean_rec(title, df):
+def euclidean_rec(title, df,num_of_rec):
+    # change route type and regions into dummy values -- if filtered, the dummies will update appropriately for the current df
     trail_recomm = pd.get_dummies(df[['name','type','time_h','length_km','netElevation','totalAscent','lng','lat','region']], columns=['type','region'])
-
     X = trail_recomm.drop(columns='name').values
     # Standardize the features so that no feature dominates the distance computations due to unit scale
     scaler = StandardScaler().fit(X)
     X = scaler.transform(X)
-    
+    # the hike you searched for
     hike_lookup = trail_recomm.loc[trail_recomm['name'] == title]
-    
+    hike_lookup = hike_lookup.drop(columns='name').values
     hike_lookup = scaler.transform(hike_lookup)
-    # Distance from all other cars
+    # Distance from all other hikes
     distances = euclidean_distances(X, hike_lookup)
     distances = distances.reshape(-1)   
-    # Find the 3 indices with the minimum distance (highest similarity) to the car we're looking at
+    # Find the num_rec indices with the minimum distance (highest similarity) to the hike we're looking at
     ordered_indices = distances.argsort()
-    closest_indices = ordered_indices[1:num_rec]
-    # Get the cars for these indices
+    closest_indices = ordered_indices[1:num_of_rec+1]
+    # Get the hikes for these indices abnd relate back to original df
     closest_trails = trail_recomm.iloc[closest_indices]
-    return closest_trails
+    hike_names = closest_trails['name'].tolist()
+    # go back to df
+    result_df = df[df['name'].isin(hike_names)][['name','region','type','time_h','length_km','totalAscent','trackElevation']]
+    return result_df
 
-# function to vectorize + find cosine similarity matrix
-def vectorize_text_cosine(data):
-    count_vect = CountVectorizer()
-    cv_mat = count_vect.fit_transform(data)
-    # get cosine
-    cos_sim_matrix = cosine_similarity(cv_mat)
-    return cos_sim_matrix
-
-# function for recommendation system
-@st.cache
-def cosine_rec(title,cos_sim_matrix,df,num_of_rec=5):
-    # indices of the hikes
-    hike_indices = pd.Series(df.index, index=df['name']).drop_duplicates()
-    #index of hike
-    idx = hike_indices[title]
-    # look into cosine matrix for that index
-    sim_scores = list(enumerate(cos_sim_matrix[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    selected_hike_indices = [i[0] for i in sim_scores[1:]]
-    selected_hike_scores = [i[1] for i in sim_scores[1:]]
-    # get dataframe and title
-    result_df = df.iloc[selected_hike_indices]
-    result_df['similarity_score'] = selected_hike_scores
-    final_recommened_hikes = result_df[['name','region','type','time_h','length_km','totalAscent','similarity_score']]
-    return final_recommened_hikes[:num_of_rec]
-    
-    
 # function for searching for hikes without trail name
 @st.cache
 def search_term_if_not_found(term, df):
     result_df = df[df['name'].str.contains(term)]
-    return result_df[['name','region','type','time_h','length_km','totalAscent']]
+    return result_df[['name','region','type','time_h','length_km','totalAscent','trackElevation']]
 
 # CSS Style for ~Aesthetics~
 RESULT_TEMP = """
-<h4 style = "margin-bottom: -5px;">{}</h4>
+<p style = "color:black;margin-bottom: -10px;"><b>{}</b></p>
 <p style = "color:black;margin-bottom: -10px;"><span style="color:red;">Region: </span>{}</p>
 <p style = "color:black;margin-bottom: -10px;"><span style="color:red;">Trail Type: </span>{}</p>
 <p style = "color:black;margin-bottom: -10px;"><span style="color:red;">Time: </span>{}<span> hr, </span>{}<span> min</span></p>
@@ -83,12 +61,8 @@ def img_to_bytes(img_path):
     encoded = base64.b64encode(img_bytes).decode()
     return encoded
 
-header_html = "<img src='data:image/png;base64,{}' class='img-fluid'>".format(
-    img_to_bytes("images/Recommender_Header.png")
-)
-st.markdown(
-    header_html, unsafe_allow_html=True,
-)
+header_html = "<img src='data:image/png;base64,{}' class='img-fluid'>".format(img_to_bytes("images/Recommender_Header.png"))
+st.markdown(header_html, unsafe_allow_html=True,)
 
 def main():       
     menu = ['Recommend','Data Overview']
@@ -99,7 +73,7 @@ def main():
     
     if choice == "Recommend":
         st.subheader("Hike Search Engine")
-        # search by trail name
+        
         search_term = st.text_input('Search by Trail Name')
         
         # extra search parameters -- filter dataset based on given parameters
@@ -117,7 +91,7 @@ def main():
                 type_opt = st.selectbox('Search by Route Type', types)
                 if type_opt != 'All Route Types': 
                     df = df[df['type'] == type_opt]
-
+                    
             time_selection, length_selection = st.beta_columns(2)
             times = ['All Lengths (h)','Short (< 1 hour)','Medium (1 - 5 hours)','Long (5+ hours)']
             with time_selection: 
@@ -137,7 +111,7 @@ def main():
                     df = df[(df['length_km'] >= 5) & (df['time_h'] < 10)]
                 elif length_opt == 'Long (10+ km)':
                     df = df[df['length_km'] >= 10]
-            
+                    
             ascent_selection, num_selection = st.beta_columns(2)
             grade = ['All Elevations (m)','Easy (< 100 m)','Moderate (100 - 600 m)','Challenging (600+ m)']
             with ascent_selection: 
@@ -150,46 +124,62 @@ def main():
                     df = df[df['totalAscent'] >= 600]
             with num_selection:
                 num_rec = st.number_input("Number of Hikes to Recommend",3,25,5)
-        
-        cos_sim_matrix = vectorize_text_cosine(trail_recomm['name']) # currently running cosine sim on trail name only !
-        
-        if st.button("Recommend"):
+                
+        if st.button("Recommend"):            
             if search_term is not None:
                 try:
-                    results = cosine_rec(search_term, cos_sim_matrix, df, num_of_rec=num_rec)
-                    for row in results.iterrows():
-                        rec_title = row[1][0]
-                        rec_region = row[1][1]
-                        rec_type = row[1][2]
-                        rec_time = row[1][3]
-                        rec_hour, rec_min = str(rec_time).split('.')
-                        rec_min = int(int(rec_min)*.60)
-                        rec_length = row[1][4]
-                        rec_ascent = row[1][5]
-                        
-                        stc.html(RESULT_TEMP.format(rec_title,rec_region,rec_type,rec_hour,rec_min,rec_length,rec_ascent), height=225)
-                        #left, right = st.beta_columns(2)
-                        #output = stc.html(RESULT_TEMP.format(rec_title,rec_region,rec_type,rec_time,rec_length,rec_ascent,rec_score), height=350)
-                        #left.write(output)
-                        #right.text_input("later fill")
+                    result_df = euclidean_rec(search_term, df, num_of_rec=num_rec)
+                    col1, col2 = st.beta_columns(2)
+                    for row in result_df.iterrows():
+                        with st.beta_expander(row[1][0]):
+                            col1, col2 = st.beta_columns(2)
+                            with col1:
+                                rec_title = row[1][0]
+                                rec_region = row[1][1]
+                                rec_type = row[1][2]
+                                rec_time = row[1][3]
+                                rec_hour, rec_min = str(rec_time).split('.')
+                                rec_min = int(int(rec_min)*.60)
+                                rec_length = row[1][4]
+                                rec_ascent = row[1][5]
+                                rec_elev = row[1][6]
+                                rec_elev = str(rec_elev).split(',')
+                                rec_elev = [float(i) for i in rec_elev]
+                                stc.html(RESULT_TEMP.format(rec_title,rec_region,rec_type,rec_hour,rec_min,rec_length,rec_ascent), height=250)
+                            with col2:
+                                st.image('images/02432-Queenstown-Queenstown-Sara-Orme.jpg', use_column_width='auto')
+                            fig, ax = plt.subplots();
+                            sns.lineplot(y=rec_elev, x=np.arange(start=0, stop=float(rec_length), step=rec_length/len(rec_elev)), ax=ax);
+                            ax.set(title=rec_title, xlabel='Distance (km)', ylabel='Elevation (m)');
+                            ax.grid();
+                            st.pyplot(fig);                        
                 except:
                     st.info("Suggested Hiking Trail Names:")
-                    result_df = search_term_if_not_found(search_term, df)
-                    if len(result_df['name']) < 1:
-                        st.write('Try Again')
-                    else: 
-                        for row in result_df.iterrows():
-                            rec_title = row[1][0]
-                            rec_region = row[1][1]
-                            rec_type = row[1][2]
-                            rec_time = row[1][3]
-                            rec_hour, rec_min = str(rec_time).split('.')
-                            rec_min = int(int(rec_min)*0.60)
-                            rec_length = row[1][4]
-                            rec_ascent = row[1][5]
-                        
-                            stc.html(RESULT_TEMP.format(rec_title,rec_region,rec_type,rec_hour,rec_min,rec_length,rec_ascent), height=225)
-                        
+                    result_df = search_term_if_not_found(search_term, df)[:num_rec]
+                    for row in result_df.iterrows():
+                        with st.beta_expander(row[1][0]):
+                            col1, col2 = st.beta_columns(2)
+                            with col1:
+                                rec_title = row[1][0]
+                                rec_region = row[1][1]
+                                rec_type = row[1][2]
+                                rec_time = row[1][3]
+                                rec_hour, rec_min = str(rec_time).split('.')
+                                rec_min = int(int(rec_min)*.60)
+                                rec_length = row[1][4]
+                                rec_ascent = row[1][5]
+                                rec_elev = row[1][6]
+                                rec_elev = str(rec_elev).split(',')
+                                rec_elev = [float(i) for i in rec_elev]
+                                stc.html(RESULT_TEMP.format(rec_title,rec_region,rec_type,rec_hour,rec_min,rec_length,rec_ascent), height=250)
+                            with col2:
+                                st.image('images/0434-Lake-Matheson-West-Coast-Miles-Holden.jpg', use_column_width='auto')
+                            fig, ax = plt.subplots();
+                            sns.lineplot(y=rec_elev, x=np.arange(start=0, stop=float(rec_length), step=rec_length/len(rec_elev)), ax=ax);
+                            ax.set(title=rec_title, xlabel='Distance (km)', ylabel='Elevation (m)');
+                            ax.grid();
+                            st.pyplot(fig);  
+
     elif choice == "Data Overview":
         st.subheader("Data Overview")
         st.write('Check out the following table for all the track information:')
