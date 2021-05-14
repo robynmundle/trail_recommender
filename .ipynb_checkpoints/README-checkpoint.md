@@ -18,11 +18,11 @@ Project Started | May 6 | May 6 | Started off rough but decided to pursue NZ hik
 Data Gathered | May 9 | May 9 | Will likely keep adding to this dataset but first dataset finished|
 Dataset Prepared | May 10 | May 9 | For now, the data looks good! We can circle back later |
 Content-Based Recommender | May 10 | May 10 | Tested Euclidean Distance and Cosine Similarity and worked already implemented into deployment |
-Popular Trail Recommender | May 11 | | Likely cannot do this -- no user reviews yet |
-User-Based Recommender | May 12 | | Likely cannot do this -- no user reviews yet |
-Streamlit.io App | May 14 | | |
-Image Data Exploration | May 15 | | |
-Image Recommender | May 16 | | |
+Generic Recommender | May 11 | May 11 | Incomplete search name gives alphabetic results |
+Filtered Search Recommender | May 12 | May 12 | Filters: location, elevation, time and length difficulty |
+Streamlit.io App | May 14 | May 10 - 15 | Started early, continual progress. Ending daily with functioning site |
+Image Data Exploration | May 15 | May 13 | Abandoned: Cannot obtain images for all 3000+ sites easily |
+Image Recommender | May 16 | - | -- |
 Deployment | May 16 | | |
 Presentation Dry-Run | May 19 | | |
 Presentation | May 20 | | |
@@ -58,11 +58,16 @@ The following will be updated through-out the duration of this capstone project 
 * Accomplished: filtering, started euclidean distance model and looked into altering cosine sim off name-only
 
 ##### Wed May 12, 2021
-* Tasks: Get recommendation from trail stats after any type of dataset filtering (location/stats). Get graph of elevation profile for hike in output
-* Accomplished: Recommendations done. Elevation graph output done. Image spot set, need images
+* Tasks: Finish recommendation from trail stats after any type of dataset filtering (location/stats). Get graph of elevation profile for hike in output
+* Accomplished: Recommendations done. Elevation graph output done. Image spot set, need images for trails to fill each spot
 * Hurdles: look into recommendation for other regions if search trail from different region
 
 ##### Thurs May 13, 2021
+* Tasks: Add geographical information of trails and trailheads
+* Accomplished: Early implementation of the map complete. 
+* Hurdles: Need to add highlight and/or selectability of the trail from this widget. Search function.
+
+##### Friday May 14, 2021
 * Tasks:
 * Accomplished:
 * Hurdles:
