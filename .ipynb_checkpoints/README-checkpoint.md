@@ -67,8 +67,12 @@ The following will be updated through-out the duration of this capstone project 
 * Accomplished: Early implementation of the map complete. 
 * Hurdles: Need to add highlight and/or selectability of the trail from this widget. Search function.
 
-##### Friday May 14, 2021
+##### Fri May 14, 2021
+* Tasks: Update geo map. Work on trail specific map. Get elevation chart profile interactive.
+* Accomplished: Main page map updated and filters with parameter filtering.
+* Hurdles: Cannot get clickable interaction between map and search term text box. Path of trail map is increasingly difficult
+
+##### Sat May 15, 2021
 * Tasks:
 * Accomplished:
 * Hurdles:
-
