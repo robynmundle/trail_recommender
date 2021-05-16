@@ -73,6 +73,6 @@ The following will be updated through-out the duration of this capstone project 
 * Hurdles: Cannot get clickable interaction between map and search term text box. Path of trail map is increasingly difficult
 
 ##### Sat May 15, 2021
-* Tasks:
-* Accomplished:
-* Hurdles:
+* Tasks: Work on recommended hike outputs
+* Accomplished: Graph of location of the output hikes
+* Hurdles: Cannot get coordinates of the hike to output on the map (recommended hikes)

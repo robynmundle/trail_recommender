@@ -14,6 +14,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import euclidean_distances
 import copy
 
+st.set_page_config(layout="wide")
+
 # Load Dataset
 def load_data(data):
     df = pd.read_csv(data, index_col=0)
@@ -21,37 +23,37 @@ def load_data(data):
 
 def param_filter(df, region_opt, time_opt, length_opt, ascent_opt):
     filtered_df = df.copy(deep=True)
-
+    
     if region_opt != 'All Regions': 
         filtered_df = filtered_df[filtered_df['region'] == region_opt]
-
+    
     if time_opt == 'Short (< 1 hour)': 
         filtered_df = filtered_df[filtered_df['time_h'] < 1]
     elif time_opt == 'Medium (1 - 5 hours)': 
         filtered_df = filtered_df[(filtered_df['time_h'] >= 1) & (filtered_df['time_h'] < 5)]
     elif time_opt == 'Long (5+ hours)':
         filtered_df = filtered_df[filtered_df['time_h'] >= 5]
-
+    
     if length_opt == 'Short (< 5 km)': 
         filtered_df = filtered_df[filtered_df['length_km'] < 5]
     elif length_opt == 'Medium (5 - 10 km)': 
         filtered_df = filtered_df[(filtered_df['length_km'] >= 5) & (df['time_h'] < 10)]
     elif length_opt == 'Long (10+ km)':
         filtered_df = filtered_df[filtered_df['length_km'] >= 10]
-
+    
     if ascent_opt == 'Easy (< 100 m)': 
         filtered_df = filtered_df[filtered_df['totalAscent'] < 100]
     elif ascent_opt == 'Moderate (100 - 600 m)': 
         filtered_df = filtered_df[(filtered_df['totalAscent'] >= 100) & (df['totalAscent'] < 600)]
     elif ascent_opt == 'Challenging (600+ m)':
         filtered_df = filtered_df[filtered_df['totalAscent'] >= 600]
-
+    
     return filtered_df
 
 # find closest euclidean distance as recommendation engine
 def euclidean_rec(title, df, filtered_df, num_of_rec):
     # change route type and regions into dummy values -- if filtered, the dummies will update appropriately for the current df
-    trail_recomm = df[['name','time_h','length_km','netElevation','totalAscent']]
+    trail_recomm = pd.get_dummies(df[['name','time_h','length_km','netElevation','totalAscent','type']], columns=['type'])
     X = trail_recomm.drop(columns='name').values
     # Standardize the features so that no feature dominates the distance computations due to unit scale
     scaler = StandardScaler().fit(X)
@@ -63,14 +65,18 @@ def euclidean_rec(title, df, filtered_df, num_of_rec):
     # Distance from all other hikes
     distances = euclidean_distances(X, hike_lookup)
     distances = distances.reshape(-1)
-    # Find the num_rec indices with the minimum distance (highest similarity) to the hike we're looking at
+    # Find the indices with the minimum distance (highest similarity) to the hike we're looking at
     ordered_indices = distances.argsort()
+    closest_indices = ordered_indices[:27] 
     # Get the hikes for these indices abnd relate back to original df
-    closest_trails = trail_recomm.iloc[ordered_indices]
+    closest_trails = trail_recomm.iloc[closest_indices]
+    #print(closest_trails)
     hike_names = closest_trails['name'].tolist()
-    # go back to df
-    result_df = filtered_df[filtered_df['name'].isin(hike_names)][['name','region','type','time_h','length_km','totalAscent','trackElevation']]
-    return result_df[1:num_of_rec+1]
+    # go back to df wqith parameter filtering
+    result_df = filtered_df[filtered_df['name'].isin(hike_names)][['name','region','type','time_h','length_km','totalAscent','trackElevation','lat','lon','coordinates']]
+    result_df = result_df.iloc[pd.Categorical(result_df['name'], categories=hike_names, ordered=True).argsort()]
+
+    return result_df[0:num_of_rec+1]
 
 # function for searching for hikes without trail name
 def search_term_if_not_found(term, df):
@@ -89,10 +95,18 @@ def main_map(filtered_df):
         map_style='mapbox://styles/mapbox/outdoors-v11', 
         tooltip={'html': '{name}', 'style': {'color': 'white'}}))
 
+def hike_summary(result_df):
+    for row in result_df[:1].iterrows():
+        rec_time = row[1][3]
+        rec_hour, rec_min = str(rec_time).split('.')
+        rec_min = int(int(rec_min)*.60)
+        st.subheader(f"Trails Relating to **{row[1][0]}**")
+        st.text(f"Region: {row[1][1]}\t Time: {rec_hour}h, {rec_min}min\tTotal Elevation: {row[1][5]}")
+
 def output_results(result_df):
     for row in result_df.iterrows():
         with st.beta_expander(row[1][0]):
-            col1, col2 = st.beta_columns(2)
+            col1, col2 = st.beta_columns([1,2])
             with col1:
                 rec_title = row[1][0]
                 rec_region = row[1][1]
@@ -105,14 +119,20 @@ def output_results(result_df):
                 rec_elev = row[1][6]
                 rec_elev = str(rec_elev).split(',')
                 rec_elev = [float(i) for i in rec_elev]
+                rec_lat = row[1][7]
+                rec_lon  = row[1][8]
+                rec_coord = row[1][9]
                 stc.html(RESULT_TEMP.format(rec_title,rec_region,rec_type,rec_hour,rec_min,rec_length,rec_ascent), height=250)
             with col2:
-                st.image('images/02432-Queenstown-Queenstown-Sara-Orme.jpg', use_column_width='auto')
-
-            source = pd.DataFrame({'Elevation (m)': rec_elev, 'Distance (km)': np.arange(start=0, stop=float(rec_length), step=rec_length/len(rec_elev))})
-            c  = alt.Chart(source).mark_line().encode(x='Distance (km)', y='Elevation (m)', tooltip=['Distance (km)','Elevation (m)'])
-            st.altair_chart(c, use_container_width=True)
-
+                source = pd.DataFrame({'Elevation (m)': rec_elev, 'Distance (km)': np.arange(start=0, stop=float(rec_length), step=rec_length/len(rec_elev))})
+                c  = alt.Chart(source).mark_line().encode(x='Distance (km)', 
+                                                          y='Elevation (m)', tooltip=['Distance (km)','Elevation (m)'])
+                st.altair_chart(c, use_container_width=True)
+            
+            st.pydeck_chart(pdk.Deck(layers=[pdk.Layer("PathLayer",rec_coord, get_position=[rec_lat, rec_lon], get_radius=1250, get_fill_color=[255, 0, 0, 1000])],
+                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=11, bearing=0, pitch=45),
+                                     map_style='mapbox://styles/mapbox/satellite-streets-v11'))
+            
 # ------------------ Page Set-Up ------------------
 # CSS Style for ~Aesthetics~
 RESULT_TEMP = """
@@ -150,14 +170,19 @@ def main():
             regions = sorted(df.region.unique())
             regions.insert(0,'All Regions')
             region_opt = st.selectbox('Search by Region', regions)
+            
             times = ['All Lengths (h)','Short (< 1 hour)','Medium (1 - 5 hours)','Long (5+ hours)']
             time_opt = st.selectbox('Search by Duration', times)
+            
             lengths = ['All Lengths (km)','Short (< 5 km)','Medium (5 - 10 km)','Long (10+ km)']
             length_opt = st.selectbox('Search by Length', lengths)
+            
             grade = ['All Elevations (m)','Easy (< 100 m)','Moderate (100 - 600 m)','Challenging (600+ m)']
             ascent_opt = st.selectbox('Search by Total Elevation', grade)
+            
             num_rec = st.number_input("Number of Hikes to Recommend",3,25,5)
             filtered_df = param_filter(df, region_opt, time_opt, length_opt, ascent_opt)
+            
         with right:
             st.write(" ")
             st.write(' ')
@@ -166,11 +191,12 @@ def main():
         if st.button("Recommend"):            
             try:
                 result_df = euclidean_rec(search_term, df, filtered_df, num_of_rec=num_rec)
-                output_results(result_df)
+                hike_summary(result_df)
+                output_results(result_df[1:])
             except:
                 st.info("Suggested Hiking Trail Names:")
-                result_df = search_term_if_not_found(search_term, filtered_df)[:num_rec]
-                output_results(result_df)
+                results_df = search_term_if_not_found(search_term, filtered_df)[:num_rec]
+                output_results(results_df)
 
     elif choice == "Data Overview":
         st.subheader("Data Overview")
