@@ -78,7 +78,7 @@ def euclidean_rec(title, df, filtered_df, num_of_rec):
     distances = distances.reshape(-1)
     # Find the indices with the minimum distance (highest similarity) to the hike we're looking at
     ordered_indices = distances.argsort()
-    closest_indices = ordered_indices[:26] 
+    closest_indices = ordered_indices[:2500] 
     # Get the hikes for these indices abnd relate back to original df or filtered df if appropriate
     closest_trails = trail_recomm.iloc[closest_indices]
     hike_names = closest_trails['name'].tolist()
@@ -183,7 +183,10 @@ def main():
             try:
                 result_df = euclidean_rec(search_term, df, filtered_df, num_of_rec=num_rec)
                 hike_summary(search_term, df)
-                output_results(result_df[1:])
+                if result_df['name'].str.contains(search_term).any(): 
+                    output_results(result_df[1:])
+                else: 
+                    output_results(result_df[:num_rec])
             except:
                 st.info("Suggested Hiking Trail Names:")
                 results_df = search_term_if_not_found(search_term, filtered_df)[:num_rec]
