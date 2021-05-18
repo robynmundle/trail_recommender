@@ -20,7 +20,7 @@ st.set_page_config(layout="wide")
 def load_data(data):
     df = pd.read_csv(data, index_col=0)
     return df
-# -----------------------------------------------------
+# Modify Dataset
 def param_filter(df, region_opt, time_opt, length_opt, ascent_opt):
     filtered_df = df.copy(deep=True)
     
@@ -50,9 +50,20 @@ def param_filter(df, region_opt, time_opt, length_opt, ascent_opt):
     
     return filtered_df
 # -----------------------------------------------------
+# geographical map of hiking trails loaded
+def main_map(filtered_df):
+    st.pydeck_chart(pdk.Deck(
+        layers=[pdk.Layer('ScatterplotLayer', filtered_df, get_position=['lon', 'lat'],
+                          auto_highlight=True, get_radius=1250, # Radius is given in meters
+                          get_fill_color=[255, 0, 0, 1000], pickable=True)], 
+        initial_view_state=pdk.ViewState(longitude=np.average(filtered_df['lon']), latitude=np.average(filtered_df['lat']),
+                                         zoom=6, min_zoom=4, max_zoom=10, pitch=40.5, bearing=0),
+        map_style='mapbox://styles/mapbox/outdoors-v11', 
+        tooltip={'html': '{name}', 'style': {'color': 'white'}}))
+# -----------------------------------------------------
 # find closest euclidean distance as recommendation engine
 def euclidean_rec(title, df, filtered_df, num_of_rec):
-    # change route type and regions into dummy values -- if filtered, the dummies will update appropriately for the current df
+    # change route type into dummy values
     trail_recomm = pd.get_dummies(df[['name','time_h','length_km','netElevation','totalAscent','type']], columns=['type'])
     X = trail_recomm.drop(columns='name').values
     # Standardize the features so that no feature dominates the distance computations due to unit scale
@@ -67,32 +78,19 @@ def euclidean_rec(title, df, filtered_df, num_of_rec):
     distances = distances.reshape(-1)
     # Find the indices with the minimum distance (highest similarity) to the hike we're looking at
     ordered_indices = distances.argsort()
-    closest_indices = ordered_indices[:27] 
-    # Get the hikes for these indices abnd relate back to original df
+    closest_indices = ordered_indices[:26] 
+    # Get the hikes for these indices abnd relate back to original df or filtered df if appropriate
     closest_trails = trail_recomm.iloc[closest_indices]
-    #print(closest_trails)
     hike_names = closest_trails['name'].tolist()
     # go back to df wqith parameter filtering
     result_df = filtered_df[filtered_df['name'].isin(hike_names)][['name','region','type','time_h','length_km','totalAscent','trackElevation','lat','lon','coordinates']]
     result_df = result_df.iloc[pd.Categorical(result_df['name'], categories=hike_names, ordered=True).argsort()]
-    return result_df[0:num_of_rec+1]
+    return result_df[:num_of_rec+1]
 # -----------------------------------------------------
 # function for searching for hikes without trail name
 def search_term_if_not_found(term, df):
     result_df = df[df['name'].str.contains(term)]
     return result_df[['name','region','type','time_h','length_km','totalAscent','trackElevation','lat','lon','coordinates']]
-# -----------------------------------------------------
-# geographical map of hiking trails loaded
-def main_map(filtered_df):
-    st.pydeck_chart(pdk.Deck(
-        layers=[pdk.Layer('ScatterplotLayer', filtered_df, get_position=['lon', 'lat'],
-                          auto_highlight=True, get_radius=1250, # Radius is given in meters
-                          get_fill_color=[255, 0, 0, 1000],  # Set an RGBA value for fill
-                          pickable=True)], 
-        initial_view_state=pdk.ViewState(longitude=np.average(filtered_df['lon']), latitude=np.average(filtered_df['lat']),
-                                         zoom=6, min_zoom=4, max_zoom=10, pitch=40.5, bearing=0),
-        map_style='mapbox://styles/mapbox/outdoors-v11', 
-        tooltip={'html': '{name}', 'style': {'color': 'white'}}))
 # -----------------------------------------------------
 def hike_summary(result_df):
     for row in result_df[:1].iterrows():
