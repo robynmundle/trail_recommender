@@ -181,7 +181,7 @@ def main():
         if st.button("Recommend"):            
             try:
                 result_df = euclidean_rec(search_term, df, filtered_df, num_of_rec=num_rec)
-                hike_summary(result_df)
+                hike_summary(search_term, df)
                 output_results(result_df[1:])
             except:
                 st.info("Suggested Hiking Trail Names:")
