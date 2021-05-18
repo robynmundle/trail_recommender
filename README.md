@@ -1,5 +1,5 @@
 # Hiking Trail Recommender
-Capstone Project of Lighthouse Labs consisting of web scraping hiking trail information to build a dataset on top of the Walking and Tramping routes provided by the Department of Conservation (DOC) in New Zealand. Trail information is cleaned and recommendation systems are generated based on hiking similarities. If possible, user reviews of the tracks will be included as well as images of the trail for a multiple recommendation offers during deployment.
+Capstone Project of Lighthouse Labs consisting of web scraping hiking trail information to build a dataset on top of the Walking and Tramping routes provided by the Department of Conservation (DOC) in New Zealand. Trail information was cleaned and a recommendation system was generated based on hiking similarities.
 
 ## Project Decription
 One of the biggest limitations getting into hiking is knowing which trail to pick. Often times, the common resources we have for trail information are catagorized by location-- which park is nearby and then search trails within. But if you're new to the activity or looking to branch out of your nearby park, a recommonder system that finds similar trail difficulties and popularity based on your activity level is ideal. 
@@ -21,9 +21,8 @@ Content-Based Recommender | May 10 | May 10 | Tested Euclidean Distance and Cosi
 Generic Recommender | May 11 | May 11 | Incomplete search name gives alphabetic results |
 Filtered Search Recommender | May 12 | May 12 | Filters: location, elevation, time and length difficulty |
 Streamlit.io App | May 14 | May 10 - 15 | Started early, continual progress. Ending daily with functioning site |
-Image Data Exploration | May 15 | May 13 | Abandoned: Cannot obtain images for all 3000+ sites easily |
-Image Recommender | May 16 | - | -- |
-Deployment | May 16 | | |
+Image Data Exploration | May 15 | May 13 | Cannot obtain images for all 3000+ sites easily |
+Deployment | May 16 | May 18 | Running on EC2 Instance of AWS |
 Presentation Dry-Run | May 19 | | |
 Presentation | May 20 | | |
 
@@ -76,3 +75,10 @@ The following will be updated through-out the duration of this capstone project 
 * Tasks: Work on recommended hike outputs
 * Accomplished: Graph of location of the output hikes
 * Hurdles: Cannot get coordinates of the hike to output on the map (recommended hikes)
+
+##### Mon May 17, 2021
+* Tasks: Work on presentation
+
+##### Tues May 18, 2021
+* Tasks: Deploy to AWS, work on presentation
+* Accomplished:

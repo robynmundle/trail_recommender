@@ -15,12 +15,12 @@ from sklearn.metrics.pairwise import euclidean_distances
 import copy
 
 st.set_page_config(layout="wide")
-
+# -----------------------------------------------------
 # Load Dataset
 def load_data(data):
     df = pd.read_csv(data, index_col=0)
     return df
-
+# -----------------------------------------------------
 def param_filter(df, region_opt, time_opt, length_opt, ascent_opt):
     filtered_df = df.copy(deep=True)
     
@@ -37,7 +37,7 @@ def param_filter(df, region_opt, time_opt, length_opt, ascent_opt):
     if length_opt == 'Short (< 5 km)': 
         filtered_df = filtered_df[filtered_df['length_km'] < 5]
     elif length_opt == 'Medium (5 - 10 km)': 
-        filtered_df = filtered_df[(filtered_df['length_km'] >= 5) & (df['time_h'] < 10)]
+        filtered_df = filtered_df[(filtered_df['length_km'] >= 5) & (df['length_km'] < 10)]
     elif length_opt == 'Long (10+ km)':
         filtered_df = filtered_df[filtered_df['length_km'] >= 10]
     
@@ -49,7 +49,7 @@ def param_filter(df, region_opt, time_opt, length_opt, ascent_opt):
         filtered_df = filtered_df[filtered_df['totalAscent'] >= 600]
     
     return filtered_df
-
+# -----------------------------------------------------
 # find closest euclidean distance as recommendation engine
 def euclidean_rec(title, df, filtered_df, num_of_rec):
     # change route type and regions into dummy values -- if filtered, the dummies will update appropriately for the current df
@@ -75,14 +75,13 @@ def euclidean_rec(title, df, filtered_df, num_of_rec):
     # go back to df wqith parameter filtering
     result_df = filtered_df[filtered_df['name'].isin(hike_names)][['name','region','type','time_h','length_km','totalAscent','trackElevation','lat','lon','coordinates']]
     result_df = result_df.iloc[pd.Categorical(result_df['name'], categories=hike_names, ordered=True).argsort()]
-
     return result_df[0:num_of_rec+1]
-
+# -----------------------------------------------------
 # function for searching for hikes without trail name
 def search_term_if_not_found(term, df):
     result_df = df[df['name'].str.contains(term)]
-    return result_df[['name','region','type','time_h','length_km','totalAscent','trackElevation']]
-
+    return result_df[['name','region','type','time_h','length_km','totalAscent','trackElevation','lat','lon','coordinates']]
+# -----------------------------------------------------
 # geographical map of hiking trails loaded
 def main_map(filtered_df):
     st.pydeck_chart(pdk.Deck(
@@ -94,7 +93,7 @@ def main_map(filtered_df):
                                          zoom=6, min_zoom=4, max_zoom=10, pitch=40.5, bearing=0),
         map_style='mapbox://styles/mapbox/outdoors-v11', 
         tooltip={'html': '{name}', 'style': {'color': 'white'}}))
-
+# -----------------------------------------------------
 def hike_summary(result_df):
     for row in result_df[:1].iterrows():
         rec_time = row[1][3]
@@ -102,7 +101,7 @@ def hike_summary(result_df):
         rec_min = int(int(rec_min)*.60)
         st.subheader(f"Trails Relating to **{row[1][0]}**")
         st.text(f"Region: {row[1][1]}\t Time: {rec_hour}h, {rec_min}min\tTotal Elevation: {row[1][5]}")
-
+# -----------------------------------------------------
 def output_results(result_df):
     for row in result_df.iterrows():
         with st.beta_expander(row[1][0]):
@@ -125,13 +124,12 @@ def output_results(result_df):
                 stc.html(RESULT_TEMP.format(rec_title,rec_region,rec_type,rec_hour,rec_min,rec_length,rec_ascent), height=250)
             with col2:
                 source = pd.DataFrame({'Elevation (m)': rec_elev, 'Distance (km)': np.arange(start=0, stop=float(rec_length), step=rec_length/len(rec_elev))})
-                c  = alt.Chart(source).mark_line().encode(x='Distance (km)', 
-                                                          y='Elevation (m)', tooltip=['Distance (km)','Elevation (m)'])
+                c  = alt.Chart(source).mark_line().encode(x='Distance (km)', y='Elevation (m)', tooltip=['Distance (km)','Elevation (m)'])
                 st.altair_chart(c, use_container_width=True)
             
-            st.pydeck_chart(pdk.Deck(layers=[pdk.Layer("PathLayer",rec_coord, get_position=[rec_lat, rec_lon], get_radius=1250, get_fill_color=[255, 0, 0, 1000])],
-                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=11, bearing=0, pitch=45),
-                                     map_style='mapbox://styles/mapbox/satellite-streets-v11'))
+            #st.pydeck_chart(pdk.Deck(layers=[],
+            #                         initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=11, bearing=0, pitch=45),
+            #                         map_style='mapbox://styles/mapbox/satellite-streets-v11'))
             
 # ------------------ Page Set-Up ------------------
 # CSS Style for ~Aesthetics~
@@ -163,26 +161,20 @@ def main():
     if choice == "Recommend":
         st.subheader("Hike Search Engine")
         search_term = st.text_input('Search by Trail Name')
-
         left, right = st.beta_columns(2)
         with left:
             # extra search parameters -- filter dataset based on given parameters
             regions = sorted(df.region.unique())
             regions.insert(0,'All Regions')
             region_opt = st.selectbox('Search by Region', regions)
-            
             times = ['All Lengths (h)','Short (< 1 hour)','Medium (1 - 5 hours)','Long (5+ hours)']
-            time_opt = st.selectbox('Search by Duration', times)
-            
+            time_opt = st.selectbox('Search by Duration', times)            
             lengths = ['All Lengths (km)','Short (< 5 km)','Medium (5 - 10 km)','Long (10+ km)']
-            length_opt = st.selectbox('Search by Length', lengths)
-            
+            length_opt = st.selectbox('Search by Length', lengths)            
             grade = ['All Elevations (m)','Easy (< 100 m)','Moderate (100 - 600 m)','Challenging (600+ m)']
-            ascent_opt = st.selectbox('Search by Total Elevation', grade)
-            
+            ascent_opt = st.selectbox('Search by Total Elevation', grade)            
             num_rec = st.number_input("Number of Hikes to Recommend",3,25,5)
-            filtered_df = param_filter(df, region_opt, time_opt, length_opt, ascent_opt)
-            
+            filtered_df = param_filter(df, region_opt, time_opt, length_opt, ascent_opt)            
         with right:
             st.write(" ")
             st.write(' ')
@@ -203,6 +195,6 @@ def main():
         st.write('Check out the following table for all the track information:')
         st.dataframe(df[['name','region','type','time_h','length_km','totalAscent','netElevation','minElevation','maxElevation']])
 
-    
+# -----------------------------------------------------    
 if __name__ == '__main__':
     main()
