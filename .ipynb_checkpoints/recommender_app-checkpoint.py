@@ -127,9 +127,9 @@ def output_results(result_df):
                 c  = alt.Chart(source).mark_line().encode(x='Distance (km)', y='Elevation (m)', tooltip=['Distance (km)','Elevation (m)'])
                 st.altair_chart(c, use_container_width=True)
             
-            #st.pydeck_chart(pdk.Deck(layers=[],
-            #                         initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=11, bearing=0, pitch=45),
-            #                         map_style='mapbox://styles/mapbox/satellite-streets-v11'))
+            st.pydeck_chart(pdk.Deck(layers=[],
+                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=11, bearing=0, pitch=45),
+                                     map_style='mapbox://styles/mapbox/satellite-streets-v11'))
             
 # ------------------ Page Set-Up ------------------
 # CSS Style for ~Aesthetics~
