@@ -128,7 +128,7 @@ def output_results(result_df):
             
             st.pydeck_chart(pdk.Deck(layers=[pdk.Layer('ScatterplotLayer', result_df, get_position=['lon', 'lat'], get_radius=50, # Radius is given in meters
                           get_fill_color=[255, 0, 0, 1000])],
-                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=15, bearing=0, pitch=45),
+                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=12, bearing=0, pitch=45),
                                      map_style='mapbox://styles/mapbox/satellite-streets-v11'))
             
 # ------------------ Page Set-Up ------------------
