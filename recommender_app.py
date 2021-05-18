@@ -92,8 +92,8 @@ def search_term_if_not_found(term, df):
     result_df = df[df['name'].str.contains(term)]
     return result_df[['name','region','type','time_h','length_km','totalAscent','trackElevation','lat','lon','coordinates']]
 # -----------------------------------------------------
-def hike_summary(result_df):
-    for row in result_df[:1].iterrows():
+def hike_summary(search_term, df):
+    for row in df[df['name'] == search_term].iterrows():
         rec_time = row[1][3]
         rec_hour, rec_min = str(rec_time).split('.')
         rec_min = int(int(rec_min)*.60)
@@ -126,7 +126,7 @@ def output_results(result_df):
                 st.altair_chart(c, use_container_width=True)
             
             st.pydeck_chart(pdk.Deck(layers=[],
-                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=11, bearing=0, pitch=45),
+                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=12, bearing=0, pitch=45),
                                      map_style='mapbox://styles/mapbox/satellite-streets-v11'))
             
 # ------------------ Page Set-Up ------------------
