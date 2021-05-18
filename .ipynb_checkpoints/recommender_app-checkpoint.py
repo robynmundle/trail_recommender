@@ -85,6 +85,7 @@ def euclidean_rec(title, df, filtered_df, num_of_rec):
     # go back to df wqith parameter filtering
     result_df = filtered_df[filtered_df['name'].isin(hike_names)][['name','region','type','time_h','length_km','totalAscent','trackElevation','lat','lon','coordinates']]
     result_df = result_df.iloc[pd.Categorical(result_df['name'], categories=hike_names, ordered=True).argsort()]
+    print(result_df)
     return result_df[:num_of_rec+1]
 # -----------------------------------------------------
 # function for searching for hikes without trail name
