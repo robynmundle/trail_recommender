@@ -95,7 +95,7 @@ def search_term_if_not_found(term, df):
 # -----------------------------------------------------
 def hike_summary(search_term, df):
     for row in df[df['name'] == search_term].iterrows():
-        rec_time = row[1][3]
+        rec_time = row[1][2]
         rec_hour, rec_min = str(rec_time).split('.')
         rec_min = int(int(rec_min)*.60)
         st.subheader(f"Trails Relating to **{row[1][0]}**")
@@ -128,7 +128,7 @@ def output_results(result_df):
             
             st.pydeck_chart(pdk.Deck(layers=[pdk.Layer('ScatterplotLayer', result_df, get_position=['lon', 'lat'], get_radius=50, # Radius is given in meters
                           get_fill_color=[255, 0, 0, 1000])],
-                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=12, bearing=0, pitch=45),
+                                     initial_view_state=pdk.ViewState(latitude=rec_lat, longitude=rec_lon, zoom=15, bearing=0, pitch=45),
                                      map_style='mapbox://styles/mapbox/satellite-streets-v11'))
             
 # ------------------ Page Set-Up ------------------
@@ -184,7 +184,7 @@ def main():
             try:
                 result_df = euclidean_rec(search_term, df, filtered_df, num_of_rec=num_rec)
                 hike_summary(search_term, df)
-                output_results(result_df)
+                output_results(result_df[1:])
             except:
                 st.info("Suggested Hiking Trail Names:")
                 results_df = search_term_if_not_found(search_term, filtered_df)[:num_rec]
