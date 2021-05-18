@@ -184,7 +184,7 @@ def main():
             try:
                 result_df = euclidean_rec(search_term, df, filtered_df, num_of_rec=num_rec)
                 hike_summary(search_term, df)
-                output_results(result_df[1:])
+                output_results(result_df)
             except:
                 st.info("Suggested Hiking Trail Names:")
                 results_df = search_term_if_not_found(search_term, filtered_df)[:num_rec]
