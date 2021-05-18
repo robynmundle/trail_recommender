@@ -64,7 +64,7 @@ def main_map(filtered_df):
 # find closest euclidean distance as recommendation engine
 def euclidean_rec(title, df, filtered_df, num_of_rec):
     # change route type into dummy values
-    trail_recomm = pd.get_dummies(df[['name','time_h','length_km','netElevation','totalAscent','type']], columns=['type'])
+    trail_recomm = df[['name','time_h','length_km','netElevation','totalAscent']]
     X = trail_recomm.drop(columns='name').values
     # Standardize the features so that no feature dominates the distance computations due to unit scale
     scaler = StandardScaler().fit(X)
@@ -157,7 +157,6 @@ st.sidebar.write('Welcome to the hiking trail recommender system for New Zealand
 
 def main():   
     df = load_data("data/WalkingKiwi_Tracks5.csv")
-
     if choice == "Recommend":
         st.subheader("Hike Search Engine")
         search_term = st.text_input('Search by Trail Name')
