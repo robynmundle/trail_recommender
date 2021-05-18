@@ -98,7 +98,7 @@ def hike_summary(search_term, df):
         rec_hour, rec_min = str(rec_time).split('.')
         rec_min = int(int(rec_min)*.60)
         st.subheader(f"Trails Relating to **{row[1][0]}**")
-        st.text(f"Region: {row[1][1]}\t Time: {rec_hour}h, {rec_min}min\tTotal Elevation: {row[1][5]}")
+        st.text(f"Region: {row[1][13]} \t Time: {rec_hour}h, {rec_min}min \t Total Elevation: {row[1][7]}")
 # -----------------------------------------------------
 def output_results(result_df):
     for row in result_df.iterrows():
