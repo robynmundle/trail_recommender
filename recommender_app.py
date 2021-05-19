@@ -85,7 +85,7 @@ def euclidean_rec(title, df, filtered_df, num_of_rec):
     # go back to df wqith parameter filtering
     result_df = filtered_df[filtered_df['name'].isin(hike_names)][['name','region','type','time_h','length_km','totalAscent','trackElevation','lat','lon','coordinates']]
     result_df = result_df.iloc[pd.Categorical(result_df['name'], categories=hike_names, ordered=True).argsort()]
-    print(result_df)
+
     return result_df[:num_of_rec+1]
 # -----------------------------------------------------
 # function for searching for hikes without trail name
@@ -152,7 +152,7 @@ st.markdown(header_html, unsafe_allow_html=True,)
 
 menu = ['Recommend','Data Overview']
 choice = st.sidebar.radio("Directory", menu)
-st.sidebar.write('Welcome to the hiking trail recommender system for New Zealand.\n\n Recommender systems are among the most popular applications of data science today. They help to overcome the problem of being inundated with choices. With this recommendation system you can parse through trailheads to find appropriate hikes that suite your needs and help you get out and enjoy the beauty of New Zealand.\n\nSome of the hiking trail information was assembled from the [Department of Conservation (DOC)](https://www.doc.govt.nz) and used under the [Creative Commons 3.0 license](https://creativecommons.org/licenses/by/3.0/nz/) in combination with track data obtained from other sources.')
+st.sidebar.write("Welcome to the hiking trail recommender system for New Zealand.\n\n Recommender systems are among the most popular applications of data science today. They help to overcome the problem of being inundated with choices. With this recommendation system you can parse through trailheads to find appropriate hikes that suite your needs and help you get out and enjoy the beauty of New Zealand.\n\nSome of the hiking trail information was assembled from the [Department of Conservation (DOC)](https://www.doc.govt.nz) and used under the [Creative Commons 3.0 license](https://creativecommons.org/licenses/by/3.0/nz/) in combination with track data obtained from other sources.\n\n Data was acquired May 2021 and may not accurately reflect current trail information. If you intend to walk a track, please confirm with your local office or the DOC website that the track isn't under a temporary or more permanent closure before embarking.")
 # ------------------ Page Set-Up ------------------
 
 def main():   
