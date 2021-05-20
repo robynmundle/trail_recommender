@@ -9,7 +9,7 @@ This github repo will contain all the information I am assembling to generate th
 
 Data: I have started with the [Walking and Tramping Routes provided by the Department of Conservation (DOC)](https://doc-deptconservation.opendata.arcgis.com/datasets/e3f63067394a46238c92f9aed63ff78b), a New Zealand government agency dedicated to conserving New Zealand’s natural and historic heritage. With this, I have 3000+ trail routes across NZ. I've chosen to work in NZ by personal preference as it is one of the best countries to go explore the great outdoors. I will be supplementing this information using BeautifulSoup and/or Selenium Chromedriver to scrape trail information and user review websites to generate further track information. First I will look for website resources that provide track information. Then user reviews. Time permitting, I hope to scrape an inventory of photos for these trails to offer a visual element to the recommender system(s).
 
-Machine Learning: I intend to first generate a content-based filtering recommendation system using hike to hike similarities. This model will look at trail length, elevation, difficulties, etc. Secondly, once user review information has been cleaned and preprocessed, I want to generate two further recommender engines. The first will encapsulate the most popular trails overall, as people often are drawn to popular sites for a reason. The second collaborative filtering model will generate similarly liked hikes based on input hike. If I am able, the final stretch goal I set for myself is to include an image repository such that users can pick a trail they like based on pictures and give back trail recommendations based on this.
+Machine Learning: I intend to first generate a content-based filtering recommendation system using hike to hike similarities. This model will look at trail length, elevation, difficulties, etc. I want to integrate the ability to search through hikes where you can receive recommendations by searching a trail name, partial match, or look within the hikes for location, difficulty, length, etc. This model will be deployed to AWS with a Streamlit.io API app.
 
 ## Project Milestone
 Milestone | Deadline | Actual | Notes |
@@ -23,8 +23,7 @@ Filtered Search Recommender | May 12 | May 12 | Filters: location, elevation, ti
 Streamlit.io App | May 14 | May 10 - 15 | Started early, continual progress. Ending daily with functioning site |
 Image Data Exploration | May 15 | May 13 | Cannot obtain images for all 3000+ sites easily |
 Deployment | May 16 | May 18 | Running on EC2 Instance of AWS |
-Presentation Dry-Run | May 19 | | |
-Presentation | May 20 | | |
+Presentation | May 20 | May 20 | See presentation and demo files within the repository |
 
 ## Progress Report - Daily
 The following will be updated through-out the duration of this capstone project to reflect the progress made
@@ -81,4 +80,4 @@ The following will be updated through-out the duration of this capstone project 
 
 ##### Tues May 18, 2021
 * Tasks: Deploy to AWS, work on presentation
-* Accomplished:
+* Accomplished: Everything :)
