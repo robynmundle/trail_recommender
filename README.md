@@ -1,5 +1,8 @@
 # Hiking Trail Recommender
-Capstone Project of Lighthouse Labs consisting of web scraping hiking trail information to build a dataset on top of the Walking and Tramping routes provided by the Department of Conservation (DOC) in New Zealand. Trail information was cleaned and a recommendation system was generated based on hiking similarities.
+## Capstone Project of Lighthouse Labs 
+Dataset: Web-scraped hiking trail information to build a dataset on top of the Walking and Tramping Routes provided by the Department of Conservation (DOC) in New Zealand. 
+
+Method: Trail information was cleaned and a recommendation system was generated based on hiking similarities.
 
 ## Project Decription
 One of the biggest limitations getting into hiking is knowing which trail to pick. Often times, the common resources we have for trail information are catagorized by location-- which park is nearby and then search trails within. But if you're new to the activity or looking to branch out of your nearby park, a recommonder system that finds similar trail difficulties and popularity based on your activity level is ideal. 
